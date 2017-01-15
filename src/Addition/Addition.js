@@ -1,10 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
+import Storage from '../Storage/Starage';
+import { USER_LIST_SORT_BY_STORAGE_KEY } from '../User/UserConstants';
 
 class Addition extends Component {
 
     constructor (props, context) {
         super(props, context);
+
         this.state = {
             first_name: '',
             last_name: '',
@@ -12,7 +15,7 @@ class Addition extends Component {
             image: null,
         };
 
-        this._lastId = props.users[props.users.length - 1].id;
+        this._maxId = this._getMaxId();
     }
 
     static propTypes() {
@@ -56,7 +59,7 @@ class Addition extends Component {
                     </div>
 
                     <div className="form-group">
-                        <button onClick={(e) => this.addUser(e)}>submit</button>
+                        <button className="btn btn-primary" onClick={(e) => this.addUser(e)}>submit</button>
                     </div>
                 </form>
             </div>
@@ -96,10 +99,15 @@ class Addition extends Component {
     addUser(e) {
         e.preventDefault();
         if (this._isUserUnique(this.state)) {
-            let newId = ++this._lastId;
+            let newId = ++this._maxId;
             this.props.actions.addUser(_.extend({}, this.state, {
                 id: newId
             }));
+
+            let currentSort = Storage.getItem(USER_LIST_SORT_BY_STORAGE_KEY);
+            if (currentSort) {
+                this.props.actions.sortUsers(currentSort);
+            }
         }
     }
 
@@ -125,15 +133,21 @@ class Addition extends Component {
         let users = this.props.users;
 
         for(let index = 0; index < users.length; index++) {
-            if (users[index].deleted) continue;
-
-            if (users[index].firs_name === user.first_name || users[index].last_name === user.last_name) {
+            if (users[index].first_name === user.first_name && users[index].last_name === user.last_name) {
                 unique = false;
                 break;
             }
         }
 
         return unique;
+    }
+
+    _getMaxId() {
+        let max = 0;
+        for (let i = 0; i < this.props.users.length; i++) {
+            max = Math.max(max, this.props.users[i].id);
+        }
+        return max;
     }
 }
 

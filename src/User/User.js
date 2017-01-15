@@ -19,9 +19,9 @@ class User extends Component {
                 <td>{this.props.user.first_name}</td>
                 <td>{this.props.user.last_name}</td>
                 <td>{this.props.user.email}</td>
-                <td
-                    onClick={() => this.remove()}
-                >delete</td>
+                <td onClick={() => this.remove()}>
+                    <span className="user-delete glyphicon glyphicon-remove"></span>
+                </td>
             </tr>
         );
     }

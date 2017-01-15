@@ -1,9 +1,16 @@
 import users from '../../users.json';
 import Storage from '../Storage/Starage';
-import { ADD_USER_ACTION, DELETE_USER_ACTION, FILTER_USER_ACTION, SORT_USER_ACTION } from '../User/UserConstants';
+import {
+    ADD_USER_ACTION,
+    DELETE_USER_ACTION,
+    FILTER_USER_ACTION,
+    SORT_USER_ACTION,
+    USER_LIST_STORAGE_KEY,
+    USER_LIST_SORT_BY_STORAGE_KEY
+} from '../User/UserConstants';
+
 import userConfig from '../User/userConfig';
 
-const USER_LIST_STORAGE_KEY = 'user-list';
 const initialState = getInitialState();
 
 export default function userReducer(state = initialState, action) {
@@ -42,11 +49,8 @@ function addUserAction(state, action, { saveList } = {}) {
 function deleteUserAction(state, action, { saveList } = {}) {
     let newState = {
         ...state,
-        users: state.users.map((user) => {
-            if (user.id === action.id) {
-                user.deleted = true;
-            }
-            return user;
+        users: state.users.filter((user) => {
+            return user.id !== action.id;
         }),
     };
 
@@ -59,9 +63,12 @@ function deleteUserAction(state, action, { saveList } = {}) {
 
 function sortUserAction(state, action, { saveList } = {}) {
     let sorted = state.users.sort((a, b) => {
-        if (a[action.field] > b[action.field]) {
+        let aValue = a[action.field].toString().toLowerCase();
+        let bValue = b[action.field].toString().toLowerCase();
+
+        if (aValue > bValue) {
             return 1;
-        } else if (a[action.field] < b[action.field]) {
+        } else if (aValue < bValue) {
             return -1;
         } else {
             return 0;
@@ -75,6 +82,7 @@ function sortUserAction(state, action, { saveList } = {}) {
 
     if (saveList) {
         Storage.setItem(USER_LIST_STORAGE_KEY, JSON.stringify(newState.users));
+        Storage.setItem(USER_LIST_SORT_BY_STORAGE_KEY, action.field);
     }
 
     return newState;
@@ -93,6 +101,7 @@ function filterUserAction(state, action) {
 
                     if (user[property].toString().indexOf(action.query) !== -1) {
                         shouldDelete = false;
+                        break;
                     }
                 }
                 user.filtered = shouldDelete;

@@ -11,7 +11,7 @@ class Search extends Component {
     render() {
         return (
             <div className="row">
-                <div className="col-xs-6 col-md-6 col-lg-6 col-sm-6">
+                <div className="col-xs-7 col-md-7 col-lg-7 col-sm-7">
                     <input
                         type="text"
                         className="form-control"

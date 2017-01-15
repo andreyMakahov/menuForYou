@@ -1,8 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import User from './User';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import UserTableHeadCell from './UserTableHeadCell';
+import Storage from '../Storage/Starage';
+import {
+    USER_LIST_SORT_BY_STORAGE_KEY
+} from '../User/UserConstants';
 
 class UserList extends Component {
+
+    constructor (props, context) {
+        super(props, context);
+
+        this.state = {
+            sort: Storage.getItem(USER_LIST_SORT_BY_STORAGE_KEY)
+        };
+    }
 
     static propTypes() {
         return {
@@ -14,30 +26,40 @@ class UserList extends Component {
     render() {
         return (
             <div className="row">
-                <div className="col-xs-6 col-md-6 col-lg-6 col-sm-6">
-                    <table className="table table-striped">
+                <div className="col-xs-7 col-md-7 col-lg-7 col-sm-7">
+                    <table className="table table-striped user-table">
                         <thead>
                             <tr>
-                                <td onClick={() => this.sortByField('id')}>ID</td>
+                                <UserTableHeadCell
+                                    field="id"
+                                    title="ID"
+                                    sortIco={this.state.sort === 'id'}
+                                    onSort={(filed) => this.sortByField(filed)}/>
                                 <td>Image</td>
-                                <td onClick={() => this.sortByField('first_name')}>First name</td>
-                                <td onClick={() => this.sortByField('last_name')}>Last name</td>
-                                <td onClick={() => this.sortByField('email')}>Email</td>
+                                <UserTableHeadCell
+                                    field="first_name"
+                                    title="First Name"
+                                    sortIco={this.state.sort === 'first_name'}
+                                    onSort={(filed) => this.sortByField(filed)}/>
+                                <UserTableHeadCell
+                                    field="last_name"
+                                    title="Last Name"
+                                    sortIco={this.state.sort === 'last_name'}
+                                    onSort={(filed) => this.sortByField(filed)}/>
+                                <UserTableHeadCell
+                                    field="email"
+                                    title="Email"
+                                    sortIco={this.state.sort === 'email'}
+                                    onSort={(filed) => this.sortByField(filed)}/>
                             </tr>
                         </thead>
-                        <ReactCSSTransitionGroup
-                            transitionName="user"
-                            component="tbody"
-                            transitionEnterTimeout={500}
-                            transitionLeaveTimeout={300}>
+                        <tbody>
                             {this.props.users.map((user) => {
-                                if (!user.deleted && !user.filtered) {
-                                    return (
-                                        <User key={user.id} user={user} actions={this.props.actions} />
-                                    )
+                                if (!user.filtered) {
+                                    return (<User key={user.id} user={user} actions={this.props.actions} />)
                                 }
                             })}
-                        </ReactCSSTransitionGroup>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -46,6 +68,9 @@ class UserList extends Component {
 
     sortByField(field) {
         this.props.actions.sortUsers(field);
+        this.setState({
+            sort: field
+        })
     }
 }
 

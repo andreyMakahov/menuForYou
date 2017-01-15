@@ -24,7 +24,7 @@ class UserListApp extends Component {
         let actions = bindActionCreators(UserActions, dispatch);
 
         return (
-            <div>
+            <div className="user-list-wrapper">
                 <Search actions={actions} />
                 <UserList users={users} actions={actions} />
                 <Addition users={users} actions={actions} />

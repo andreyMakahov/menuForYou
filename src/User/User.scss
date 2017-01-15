@@ -1,19 +1,14 @@
-.user-enter {
-  opacity: 0.01;
+.user-list-wrapper {
+  padding: 30px 100px;
 }
 
-.user-enter.user-enter-active {
-  opacity: 1;
-  transition: opacity 500ms ease-in;
+.user-table {
+  text-align: left;
+  margin-top: 30px;
 }
 
-.user-leave {
-  opacity: 1;
-}
-
-.user-leave.user-leave-active {
-  opacity: 0.01;
-  transition: opacity 300ms ease-in;
+.user-table-sort-cell {
+  cursor: pointer;
 }
 
 .user-image {
@@ -21,15 +16,15 @@
   height: 16px;
 }
 
-
-.user-table {
-  display: table;
+.user-delete {
+  cursor: pointer;
 }
 
-.user-row {
-  display: table-row;
+.sort-ico {
+  padding: 0 5px;
+  vertical-align: text-top;
 }
 
-.user-cell {
-  display: table-cell;
+.invisible {
+  visibility: hidden;
 }
